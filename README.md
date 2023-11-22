@@ -40,10 +40,10 @@ classDiagram
     +end_date: date
   }
 
-  Customer "0.." *--* "0..*" Employee
+  Customer "N" *--* "N" Employee
   Employee "1" --* "1" ScheduleEmployee
-  ScheduleEmployee "1" --* "0..*" Schedule
-  Customer "1" --* "0..*" CustomerEmployees
-  Employee "1" --* "0..*" CustomerEmployees
-	Employee "1" --* "0..*" Schedule
+  ScheduleEmployee "1" --* "N" Schedule
+  Customer "1" --* "N" CustomerEmployees
+  Employee "1" --* "N" CustomerEmployees
+	Employee "1" --* "N" Schedule
 ```
