@@ -1,9 +1,7 @@
 package com.barbers.schedule.domain.model;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,7 +9,7 @@ import lombok.Setter;
 @Table(name = "tb_customerAddress")
 @Getter
 @Setter
-public class Customer_Address extends Customer{
+public class CustomerAddress extends Customer{
 
     private Integer id;
     private String street;
