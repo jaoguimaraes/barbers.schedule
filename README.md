@@ -2,48 +2,63 @@
 
 ```mermaid
 classDiagram
-  class Customer {
-    +id: int
-    +name: string
-    +employees: int
+  class services {
+    +id: integer
+    +name: varchar
+    +description: integer
+    +cost: integer
   }
 
-  class Employee {
-    +id: int
-    +name: string
-    +customer: int
-    +lunch_start_date: date
-    +lunch_end_date: date
+  class employee_services {
+    +employee_id: integer
+    +service_id: integer
+  }
+
+  class customer {
+    +id: integer
+    +name: varchar
+    +address_id: integer
+  }
+
+  class customer_employee {
+    +customer_id: integer
+    +employee_id: integer
+  }
+
+  class employee {
+    +id: integer
+    +name: varchar
     +work_start_date: date
     +work_end_date: date
+    +lunch_start_date: date
+    +lunch_end_date: date
+    +active: boolean
   }
 
-  class Schedule {
-    +id: int
-    +name: string
-    +employee_id: int
-    +address: string
-    +description: string
+  class customer_address {
+    +id: integer
+    +street: varchar
+    +number: integer
+    +zip_code: integer
+    +city: varchar
+    +state: varchar
+    +country: varchar
+  }
+
+  class schedules {
+    +id: integer
+    +name: varchar
+    +description: varchar
     +start_date: date
     +end_date: date
+    +employee_id: integer
+    +client_name: varchar
   }
 
-  class CustomerEmployees {
-    +customer_id: int
-    +employee_id: int
-  }
-
-  class ScheduleEmployee {
-    +id: int
-    +employee_id: int
-    +start_date: date
-    +end_date: date
-  }
-
-  Customer "N" *--* "N" Employee
-  Employee "1" --* "1" ScheduleEmployee
-  ScheduleEmployee "1" --* "N" Schedule
-  Customer "1" --* "N" CustomerEmployees
-  Employee "1" --* "N" CustomerEmployees
-	Employee "1" --* "N" Schedule
+  services "1" --* "N" employee_services
+  employee_services "N" *-- "1" employee
+  employee "1" --* "N" customer_employee
+  employee "N" *-- "1" schedules
+  customer_employee "N" *-- "1" customer
+  customer "1" --* "N" customer_address
 ```
