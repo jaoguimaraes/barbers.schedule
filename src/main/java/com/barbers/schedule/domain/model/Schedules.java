@@ -1,27 +1,28 @@
 package com.barbers.schedule.domain.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Date;
 
-@Entity(name = "tb_schedules")
-@Table(name = "tb_schedules")
+@Entity
+@Table(name = "schedules")
 @Getter
 @Setter
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode
 public class Schedules {
 
     @Id
-    private Integer id;
+    private Long id;
     private String name;
     private String description;
-    private Date start_date;
-    private Date end_date;
-    private Integer employeeId;
+    private Date startDate;
+    private Date endDate;
     private String clientName;
+
+    @ManyToOne
+    @JoinColumn(name = "employee_id", nullable = false)
+    private Employee employee;
 }

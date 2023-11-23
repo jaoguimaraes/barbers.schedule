@@ -1,27 +1,39 @@
 package com.barbers.schedule.domain.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.Set;
 
-@Entity(name = "tb_employee")
-@Table(name = "tb_employee")
+@Entity
+@Table(name = "employee")
 @Getter
 @Setter
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode
 public class Employee {
 
     @Id
-    private Integer id;
+    private Long id;
     private String name;
-    private Date work_start_date;
-    private Date work_end_date;
-    private Date lunch_start_date;
-    private Date lunch_end_date;
+    private Date workStartDate;
+    private Date workEndDate;
+    private Date lunchStartDate;
+    private Date lunchEndDate;
     private Boolean active;
+
+    @ManyToMany(mappedBy = "employees")
+    Set<Customer> customers;
+
+    @OneToMany(mappedBy = "employee")
+    Set<Schedules> schedules;
+
+    @ManyToMany
+    @JoinTable(
+            name = "employee_services",
+            joinColumns = @JoinColumn(name = "service_id"),
+            inverseJoinColumns = @JoinColumn(name = "employee_id"))
+    Set<Services> services;
 }

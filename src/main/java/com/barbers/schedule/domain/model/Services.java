@@ -5,17 +5,23 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
-@Entity(name = "tb_services")
-@Table(name = "tb_users")
+import java.math.BigDecimal;
+import java.util.Set;
+
+@Entity
+@Table(name = "services")
 @Getter
 @Setter
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode
 public class Services {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     private String name;
     private String description;
-    private Integer coast;
+    private BigDecimal coast;
+
+    @ManyToMany(mappedBy = "services")
+    Set<Employee> employees;
 }
