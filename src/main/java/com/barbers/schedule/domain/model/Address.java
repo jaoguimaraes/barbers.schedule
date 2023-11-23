@@ -1,6 +1,8 @@
 package com.barbers.schedule.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,6 +12,10 @@ import java.io.Serializable;
 @Getter
 @Entity
 @Table(name = "address")
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id"
+)
 public class Address {
 
     @Id
@@ -22,7 +28,6 @@ public class Address {
     private String state;
     private String country;
 
-    @JsonIgnore
-    @OneToOne(mappedBy = "address", fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
+    @OneToOne(mappedBy = "address", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Customer customer;
 }

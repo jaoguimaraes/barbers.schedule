@@ -1,5 +1,7 @@
 package com.barbers.schedule.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,6 +12,10 @@ import java.util.Set;
 @Getter
 @Entity
 @Table(name = "customer")
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id"
+)
 public class Customer {
 
     @Id
