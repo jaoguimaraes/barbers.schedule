@@ -1,21 +1,22 @@
 package com.barbers.schedule.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
+@Setter
+@Getter
 @Entity
 @Table(name = "employee")
-@Getter
-@Setter
-@EqualsAndHashCode
 public class Employee {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
     private Date workStartDate;
@@ -24,16 +25,17 @@ public class Employee {
     private Date lunchEndDate;
     private Boolean active;
 
-    @ManyToMany(mappedBy = "employees")
-    Set<Customer> customers;
+    @JsonIgnore
+    @ManyToMany(mappedBy = "employees", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<Customer> customers;
 
-    @OneToMany(mappedBy = "employee")
-    Set<Schedules> schedules;
+    @OneToMany(mappedBy = "employee", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<Schedules> schedules;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name = "employee_services",
             joinColumns = @JoinColumn(name = "service_id"),
             inverseJoinColumns = @JoinColumn(name = "employee_id"))
-    Set<Services> services;
+    private Set<Services> services;
 }
