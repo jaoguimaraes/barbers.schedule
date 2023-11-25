@@ -24,44 +24,4 @@ public class Application {
 		SpringApplication.run(Application.class, args);
 	}
 
-	private Address buildAddress() {
-		Address address = new Address();
-		address.setCountry("Brasil");
-		address.setCity("São Paulo");
-		address.setState("São Paulo");
-		address.setNumber("100");
-		address.setStreet("Rua Waldemir de Oliveira");
-		address.setZipCode("05386-360");
-		return address;
-	}
-
-	private Customer buildCustomer(final Address address) {
-		Customer customer = new Customer();
-		customer.setAddress(address);
-		customer.setName("Customer Name");
-		return customer;
-	}
-
-	private Employee buildEmployee() {
-		Employee employee = new Employee();
-		employee.setName("Lucas");
-		employee.setActive(true);
-		employee.setServices(Set.of(buildServices()));
-		return employee;
-	}
-
-	private Services buildServices() {
-		Services services = new Services();
-		services.setName("Corte de Cabelo");
-		services.setCost(BigDecimal.TEN);
-		services.setDescription("Corte de cabelo masculino");
-		return new Services();
-	}
-
-	private Schedules buildSchedules() {
-		Schedules schedules = new Schedules();
-		schedules.setName("Corte Masculino");
-		schedules.setClientName("Wallace");
-		return schedules;
-	}
 }
