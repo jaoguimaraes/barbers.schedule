@@ -1,7 +1,7 @@
 package com.barbers.schedule.exception;
 
-import lombok.Getter;
 import lombok.Builder;
+import lombok.Getter;
 
 @Getter
 @Builder

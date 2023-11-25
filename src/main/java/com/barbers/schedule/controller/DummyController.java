@@ -1,7 +1,15 @@
 package com.barbers.schedule.controller;
 
-import com.barbers.schedule.domain.model.*;
-import com.barbers.schedule.repository.*;
+import com.barbers.schedule.domain.model.Address;
+import com.barbers.schedule.domain.model.Customer;
+import com.barbers.schedule.domain.model.Employee;
+import com.barbers.schedule.domain.model.Schedules;
+import com.barbers.schedule.domain.model.Services;
+import com.barbers.schedule.repository.AddressRepository;
+import com.barbers.schedule.repository.CustomerRepository;
+import com.barbers.schedule.repository.EmployeeRepository;
+import com.barbers.schedule.repository.SchedulesRepository;
+import com.barbers.schedule.repository.ServicesRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
