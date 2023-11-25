@@ -10,13 +10,16 @@ import java.io.Serializable;
 
 @Setter
 @Getter
+@Builder
 @Entity
 @Table(name = "address")
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "id"
 )
-public class Address {
+@NoArgsConstructor
+@AllArgsConstructor
+public class Address implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -28,6 +31,6 @@ public class Address {
     private String state;
     private String country;
 
-    @OneToOne(mappedBy = "address", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "address")
     private Customer customer;
 }

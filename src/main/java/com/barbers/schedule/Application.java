@@ -24,36 +24,6 @@ public class Application {
 		SpringApplication.run(Application.class, args);
 	}
 
-	@Bean
-	@Transactional
-	CommandLineRunner runner(final CustomerRepository customerRepository, final AddressRepository addressRepository) {
-		return args -> {
-			try {
-				addressRepository.save(buildAddress());
-				log.info("Address successfully saved");
-
-				Address address = addressRepository.findAll()
-						.stream()
-						.findAny()
-						.orElseThrow(() -> new Exception("Any address not found"));
-				log.info("Address was found: {}", address);
-
-				Customer customer = buildCustomer(address);
-				customer.setEmployees(Set.of(buildEmployee()));
-				customerRepository.save(customer);
-				log.info("Customer successfully saved");
-
-				Customer customerFound = customerRepository.findAll()
-						.stream()
-						.findAny()
-						.orElseThrow();
-				log.info("Customer was found: {}", customerFound);
-			} catch (Exception e) {
-				log.error("Failed to save customer: ", e);
-			}
-		};
-	}
-
 	private Address buildAddress() {
 		Address address = new Address();
 		address.setCountry("Brasil");
