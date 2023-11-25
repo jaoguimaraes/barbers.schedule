@@ -1,6 +1,5 @@
 package com.barbers.schedule.controller;
 
-import com.barbers.schedule.domain.model.Customer;
 import com.barbers.schedule.dto.CustomerDTO;
 import com.barbers.schedule.service.CustomerService;
 import lombok.RequiredArgsConstructor;
