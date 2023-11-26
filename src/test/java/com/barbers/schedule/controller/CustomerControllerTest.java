@@ -73,5 +73,4 @@ public class CustomerControllerTest {
                 .country(ADDRESS_COUNTRY)
                 .build();
     }
-
 }
