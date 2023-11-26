@@ -41,10 +41,10 @@ public class Employee implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
-    private Date workStartDate;
-    private Date workEndDate;
-    private Date lunchStartDate;
-    private Date lunchEndDate;
+    private String workStartDate;
+    private String workEndDate;
+    private String lunchStartDate;
+    private String lunchEndDate;
     private Boolean active;
 
     @JsonIgnore
