@@ -21,7 +21,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.Set;
 
 @Setter
@@ -52,7 +51,7 @@ public class Employee implements Serializable {
     private Set<Customer> customers;
 
     @OneToMany(mappedBy = "employee", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Set<Schedules> schedules;
+    private Set<Appointment> appointments;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(

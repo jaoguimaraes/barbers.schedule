@@ -25,14 +25,14 @@ import java.util.Date;
 @Getter
 @Builder
 @Entity
-@Table(name = "schedules")
+@Table(name = "appointment")
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "id"
 )
 @NoArgsConstructor
 @AllArgsConstructor
-public class Schedules implements Serializable {
+public class Appointment implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
