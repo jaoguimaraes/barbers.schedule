@@ -1,4 +1,4 @@
-package com.barbers.schedule.dto;
+package com.barbers.schedule.domain.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

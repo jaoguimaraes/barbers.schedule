@@ -3,7 +3,7 @@ package com.barbers.schedule.controller;
 import com.barbers.schedule.dto.AuthenticationDTO;
 import com.barbers.schedule.dto.LoginResponseDTO;
 import com.barbers.schedule.dto.RegisterDTO;
-import com.barbers.schedule.dto.User;
+import com.barbers.schedule.domain.model.User;
 import com.barbers.schedule.infra.security.TokenService;
 import com.barbers.schedule.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

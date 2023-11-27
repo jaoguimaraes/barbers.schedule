@@ -1,6 +1,6 @@
 package com.barbers.schedule.repository;
 
-import com.barbers.schedule.dto.User;
+import com.barbers.schedule.domain.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 
