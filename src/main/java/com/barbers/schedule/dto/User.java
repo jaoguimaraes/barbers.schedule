@@ -24,6 +24,9 @@ import java.util.List;
 @EqualsAndHashCode(of = "id")
 public class User implements UserDetails {
 
+    private static final String ROLE_ADMIN = "ROLE_ADMIN";
+    private static final String ROLE_USER = "ROLE_USER";
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
@@ -39,10 +42,14 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if(this.role == UserRole.ADMIN) return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"),
-                new SimpleGrantedAuthority("ROLE_USER"));
-
-        else return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        if (this.role == UserRole.ADMIN) {
+            return List.of(
+                    new SimpleGrantedAuthority(ROLE_ADMIN),
+                    new SimpleGrantedAuthority(ROLE_USER)
+            );
+        } else {
+            return List.of(new SimpleGrantedAuthority(ROLE_USER));
+        }
     }
 
     @Override

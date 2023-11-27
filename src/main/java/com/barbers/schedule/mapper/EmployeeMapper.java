@@ -38,7 +38,25 @@ public class EmployeeMapper {
         employee.setLunchStartDate(employeeDTO.getLunchStartDate());
         employee.setLunchEndDate(employeeDTO.getLunchEndDate());
         employee.setActive(employeeDTO.getActive());
+        if (!employeeDTO.getServices().isEmpty()) {
+            employee.setServices(map(employeeDTO.getServices()));
+        }
         return employee;
+    }
+
+    public static Set<Services> map(final List<ServicesDTO> servicesDTOs) {
+        return servicesDTOs.stream()
+                .map(EmployeeMapper::map)
+                .collect(Collectors.toSet());
+    }
+
+    public static Services map(final ServicesDTO servicesDTO) {
+        return Services.builder()
+                .id(servicesDTO.getId())
+                .name(servicesDTO.getName())
+                .description(servicesDTO.getDescription())
+                .cost(servicesDTO.getCost())
+                .build();
     }
 
     public static List<ServicesDTO> map(final Set<Services> services) {
