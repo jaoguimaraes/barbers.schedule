@@ -5,6 +5,7 @@ import com.barbers.schedule.domain.model.Services;
 import com.barbers.schedule.dto.EmployeeDTO;
 import com.barbers.schedule.dto.ServicesDTO;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -38,7 +39,7 @@ public class EmployeeMapper {
         employee.setLunchStartDate(employeeDTO.getLunchStartDate());
         employee.setLunchEndDate(employeeDTO.getLunchEndDate());
         employee.setActive(employeeDTO.getActive());
-        if (!employeeDTO.getServices().isEmpty()) {
+        if (Objects.nonNull(employeeDTO.getServices()) && !employeeDTO.getServices().isEmpty()) {
             employee.setServices(map(employeeDTO.getServices()));
         }
         return employee;
