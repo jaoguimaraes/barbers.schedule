@@ -59,4 +59,8 @@ public class Employee implements Serializable {
             joinColumns = @JoinColumn(name = "service_id"),
             inverseJoinColumns = @JoinColumn(name = "employee_id"))
     private Set<Services> services;
+
+    public boolean isActive() {
+        return this.active;
+    }
 }
