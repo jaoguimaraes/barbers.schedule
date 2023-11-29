@@ -33,5 +33,4 @@ public class AppointmentController {
         log.info("Finding all appointments");
         return new ResponseEntity<>(appointmentService.findAllAppointments(), HttpStatus.OK);
     }
-
 }

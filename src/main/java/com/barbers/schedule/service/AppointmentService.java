@@ -112,8 +112,14 @@ public class AppointmentService {
                 appointmentDTO.getStartDate().getMinute()
         );
 
-        return (isAfterStartDate && isBeforeLunch || isAfterLunch && isBeforeEndWork);
+        boolean isSameAsEndWork = compareHoursAndMinutes(
+                Integer.parseInt(endDateConverted.get(0)),
+                Integer.parseInt(endDateConverted.get(1)),
+                appointmentDTO.getEndDate().getHour(),
+                appointmentDTO.getEndDate().getMinute()
+        );
 
+        return (isAfterStartDate && isBeforeLunch || isAfterLunch && isBeforeEndWork || isSameAsEndWork);
     }
 
     private static void hasUserAnotherAppointmentInThisPeriod(final Employee employee, final AppointmentDTO appointmentDTO) {
