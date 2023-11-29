@@ -29,11 +29,10 @@ public class AppointmentService {
         try {
             EmployeeDTO employee = appointmentDTO.getEmployee();
             if (Objects.isNull(employee)) {
-                throw new IllegalArgumentException(String.format("There is no employee for this appointment"));
+                throw new IllegalArgumentException(String.format("Employee was not informed in request"));
             }
-            Employee employeeFound = getEmployee(appointmentDTO, employee);
+            Employee employeeFound = getEmployee(employee);
             validateEmployeeIsAvailable(appointmentDTO, employeeFound);
-
             Appointment appointment = AppointmentMapper.map(appointmentDTO);
             appointment.setEmployee(employeeFound);
             return AppointmentMapper.map(appointmentRepository.save(appointment));
@@ -55,28 +54,20 @@ public class AppointmentService {
         }
     }
 
-    private Employee getEmployee(AppointmentDTO appointmentDTO, EmployeeDTO employee) {
-        Employee employeeFound = employeeRepository.findById(employee.getId())
+    private Employee getEmployee(final EmployeeDTO employee) {
+        return employeeRepository.findById(employee.getId())
                 .orElseThrow(() -> new IllegalArgumentException(
-                        String.format("Could not found employeeId: {}", appointmentDTO.getEmployee())));
-        return employeeFound;
+                        String.format("Could not found employeeId: %s", employee.getId())));
     }
 
     private void validateEmployeeIsAvailable(AppointmentDTO appointmentDTO, Employee employee) {
         if (!employee.isActive()) {
             throw new IllegalArgumentException(String.format("Employee is not active: %d", employee.getId()));
         }
-
-        boolean isEmployeeAbleToScheduleAppointment = canEmployeeScheduleAppointment(employee, appointmentDTO);
-
-        if (!isEmployeeAbleToScheduleAppointment) {
-            throw new IllegalArgumentException(
-                    String.format("Employee has no time in this period: %s - %s",
-                            appointmentDTO.getStartDate(), appointmentDTO.getEndDate()));
-        }
+        validateEmployeeScheduleAppointment(employee, appointmentDTO);
     }
 
-    private static boolean canEmployeeScheduleAppointment(final Employee employee, final AppointmentDTO appointmentDTO) {
+    private static void validateEmployeeScheduleAppointment(final Employee employee, final AppointmentDTO appointmentDTO) {
         List<String> startDateConverted = extractHoursAndMinutes(employee.getWorkStartDate());
         List<String> lunchStartDateConverted = extractHoursAndMinutes(employee.getLunchStartDate());
         List<String> lunchEndDateConverted = extractHoursAndMinutes(employee.getLunchEndDate());
@@ -112,14 +103,11 @@ public class AppointmentService {
                 appointmentDTO.getStartDate().getMinute()
         );
 
-        boolean isSameAsEndWork = compareHoursAndMinutes(
-                Integer.parseInt(endDateConverted.get(0)),
-                Integer.parseInt(endDateConverted.get(1)),
-                appointmentDTO.getEndDate().getHour(),
-                appointmentDTO.getEndDate().getMinute()
-        );
-
-        return (isAfterStartDate && isBeforeLunch || isAfterLunch && isBeforeEndWork || isSameAsEndWork);
+        if (!(isAfterStartDate && isBeforeLunch || isAfterLunch && isBeforeEndWork)) {
+            throw new IllegalArgumentException(
+                    String.format("Employee has no time in this period: %s - %s",
+                            appointmentDTO.getStartDate(), appointmentDTO.getEndDate()));
+        }
     }
 
     private static void hasUserAnotherAppointmentInThisPeriod(final Employee employee, final AppointmentDTO appointmentDTO) {
@@ -127,10 +115,8 @@ public class AppointmentService {
             boolean hasAppointments = employee.getAppointments()
                     .stream()
                     .anyMatch(employeeAppointment -> isAppointmentAtSameTime(appointmentDTO, employeeAppointment)
-                            || (isAppointmentAtSameTimeOrInside(appointmentDTO, employeeAppointment)
-                            || isAppointmentBeforeBeginAndBeforeEnd(appointmentDTO, employeeAppointment))
-                            || isAppointmentAfterBeginAndAfterEnd(appointmentDTO, employeeAppointment)
-                            || isAppointmentBeforeBeginAndAfterEnd(appointmentDTO, employeeAppointment)
+                            || isAppointmentBetweenBeforeAndStartTime(appointmentDTO, employeeAppointment)
+                            || isAppointmentBetweenAfterStartAndEndTime(appointmentDTO, employeeAppointment)
                     );
             if (hasAppointments) {
                 throw new IllegalArgumentException(
@@ -146,40 +132,42 @@ public class AppointmentService {
                 && appointmentDTO.getEndDate().isEqual(employeeAppointment.getEndDate());
     }
 
-    private static boolean isAppointmentAtSameTimeOrInside(final AppointmentDTO appointmentDTO,
-                                                           final Appointment employeeAppointment) {
-        return isAfterOrEqualDate(appointmentDTO.getStartDate(), employeeAppointment.getStartDate())
-                && isBeforeOrEqualDate(appointmentDTO.getEndDate(), employeeAppointment.getEndDate());
+    private static boolean isAppointmentBetweenBeforeAndStartTime(final AppointmentDTO appointmentDTO,
+                                                                  final Appointment employeeAppointment) {
+        if (isBeforeOrEqualDate(appointmentDTO.getStartDate(), employeeAppointment.getStartDate())) {
+            if (isBeforeOrEqualDate(appointmentDTO.getEndDate(), employeeAppointment.getEndDate())
+                    && appointmentDTO.getEndDate().isAfter(employeeAppointment.getStartDate())) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    private static boolean isAppointmentBeforeBeginAndBeforeEnd(final AppointmentDTO appointmentDTO,
-                                                                final Appointment employeeAppointment) {
-        return (isBeforeOrEqualDate(appointmentDTO.getStartDate(), employeeAppointment.getStartDate()))
-                && isAfterOrEqualDate(appointmentDTO.getEndDate(), employeeAppointment.getStartDate())
-                && isBeforeOrEqualDate(appointmentDTO.getEndDate(), employeeAppointment.getEndDate());
-    }
-
-    private static boolean isAppointmentAfterBeginAndAfterEnd(final AppointmentDTO appointmentDTO,
-                                                              final Appointment employeeAppointment) {
-        return isAfterOrEqualDate(appointmentDTO.getStartDate(), employeeAppointment.getStartDate())
-                && isBeforeOrEqualDate(appointmentDTO.getStartDate(), employeeAppointment.getEndDate())
-                && isAfterOrEqualDate(appointmentDTO.getEndDate(), employeeAppointment.getEndDate());
-    }
-
-    private static boolean isAppointmentBeforeBeginAndAfterEnd(final AppointmentDTO appointmentDTO,
-                                                               final Appointment appointment) {
-        return isBeforeOrEqualDate(appointmentDTO.getStartDate(), appointment.getStartDate())
-                && isAfterOrEqualDate(appointmentDTO.getEndDate(), appointment.getEndDate());
+    private static boolean isAppointmentBetweenAfterStartAndEndTime(final AppointmentDTO appointmentDTO,
+                                                                    final Appointment employeeAppointment) {
+        if (isAfterOrEqualDate(appointmentDTO.getStartDate(), employeeAppointment.getStartDate())) {
+            if (isAfterOrEqualDate(appointmentDTO.getEndDate(), employeeAppointment.getEndDate())
+                    && appointmentDTO.getStartDate().isBefore(employeeAppointment.getEndDate())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static boolean isBeforeOrEqualDate(final LocalDateTime startDate, final LocalDateTime endDate) {
         return startDate.isBefore(endDate) || startDate.isEqual(endDate);
+    }
 
+    private static boolean isBeforeDate(final LocalDateTime startDate, final LocalDateTime endDate) {
+        return startDate.isBefore(endDate);
     }
 
     private static boolean isAfterOrEqualDate(final LocalDateTime startDate, final LocalDateTime endDate) {
         return startDate.isAfter(endDate) || startDate.isEqual(endDate);
+    }
 
+    private static boolean isAfterDate(final LocalDateTime startDate, final LocalDateTime endDate) {
+        return startDate.isAfter(endDate);
     }
 
     private static List<String> extractHoursAndMinutes(final String date) {
@@ -192,7 +180,10 @@ public class AppointmentService {
             final Integer minute,
             final Integer appointmentHour,
             final Integer appointmentMinutes) {
-        if (hour == appointmentHour) {
+        if (Objects.equals(hour, appointmentHour)) {
+            if (Objects.equals(minute, appointmentMinutes)) {
+                return true;
+            }
             if (minute < appointmentMinutes) {
                 return true;
             }
